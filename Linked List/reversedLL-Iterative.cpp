@@ -11,27 +11,32 @@ class Node{
 		}
 };
 
-// Time complexity = O(n*n).
+// Time complexity = O(n).
 Node* reverseLL(Node *head){
 	if(head == NULL || head->next == NULL){
 		return head;
 	}
 	
-	// Now when we call the recursive function we will assume that the list that we get is already reversed, soo the last element will be at the front
-	// and we need to store the address of that head in a new pointer.
-	// After storing , we need to take out current element at hand and put it at the end.
-	// And make that element point to NULL.
-	Node *smallAns = reverseLL(head->next);
+	// We shall use the 3 node pointer method.
+	Node *prev  = NULL;
+	Node *curr = head;
+	Node *fwd = head->next;
 	
-	// The current element at hand is stored in head pointer.
-	// To insert the elemnt at the end, we need to travel till the end as well.
-	Node *temp = smallAns;
-	while(temp->next != NULL){
-		temp = temp->next;
+	while(curr != NULL){
+		curr->next = prev;
+		
+		// Now we will move out pointers forward.
+		prev = curr;
+		curr = fwd;
+		
+		// If fwd reaches null and we call fwd->next at that point, we will get a segmentation fault error.
+		// Soo everytime before moving fwd to fwd->next, we shall check if it has reached NULL or not.
+		if(fwd != NULL)
+			fwd = fwd->next;
 	}
-	temp->next = head;
-	head->next = NULL;
-	return smallAns;
+	
+	// We are return prev because prev will now become the head of the reversed Linked List.
+	return prev;
 }
 
 Node* takeInput(){
