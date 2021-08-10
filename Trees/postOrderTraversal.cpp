@@ -6,10 +6,10 @@ using namespace std;
 template <typename T>
 class TreeNode{
 	public:
-		int data;
-		vector<TreeNode<int>*> children;
+		T data;
+		vector<TreeNode<T>*> children;
 		
-		TreeNode(int val){
+		TreeNode(T val){
 			this->data = val;
 		}
 		
@@ -20,10 +20,9 @@ class TreeNode{
 		}
 };
 
-
 TreeNode<int>* takeInputLevelWise(){
 	int rootData;
-	cout << " Enter the root data :" ;
+	//cout << "Enter the root :";
 	cin >> rootData;
 	
 	TreeNode<int>* root = new TreeNode<int>(rootData);
@@ -36,12 +35,12 @@ TreeNode<int>* takeInputLevelWise(){
 		pendingChild.pop();
 		
 		int numChild;
-		cout << "Enter the number of nodes for " << currNode->data << ":";
+		//cout << "Enter the number of nodes of " << currNode->data << ": ";
 		cin >> numChild;
 		
 		for(int i = 0; i < numChild; i++){
 			int childData;
-			cout << "Enter the " << i + 1 <<"th child of the node " << currNode->data << " :";
+			//cout << "Enter the " << i + 1 << "th node of "<<currNode->data << " :";
 			cin >> childData;
 			
 			TreeNode<int>* childNode = new TreeNode<int>(childData);
@@ -53,31 +52,24 @@ TreeNode<int>* takeInputLevelWise(){
 	return root;
 }
 
-
-void printNodesAtDepthK(TreeNode<int>* root, int k){
+// First print the childen, then print the root node.
+void postOrderTraversal(TreeNode<int>* root){
 	if(root == NULL){
 		return;
 	}
 	
-	if(k == 0){
-		cout << root->data << " ";
-		return;
-	}
 	
 	for(int i = 0; i < root->children.size(); i++){
-		printNodesAtDepthK(root->children[i], k-1);
+		postOrderTraversal(root->children[i]);
 	}
+	cout << root->data << " ";
 }
 
 int main(){
+	
 	TreeNode<int>* root = takeInputLevelWise();
 	
-	int k;
-	cout << "Enter the desired depth: ";
-	cin >> k;
-	
-	printNodesAtDepthK(root,k);
+	postOrderTraversal(root);
 	
 	return 0;
 }
-

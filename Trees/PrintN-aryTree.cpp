@@ -15,7 +15,12 @@ class TreeNode{
 	 	TreeNode(int val){
 	 		this->data = val;
 		}
-	
+		
+		~TreeNode(){
+			for(int i = 0; i < children.size(); i++){
+				delete children[i];
+			}
+		}
 };
 
 
@@ -69,6 +74,19 @@ void printTree(TreeNode<T>* root){
 		printTree(root->children[j]);
 	}
 }
+
+
+// We have 2 ways to delete the tree.
+
+//1. Recusively delete the node using post Order traversal.
+void deleteTree(TreeNode<int>* root){
+	for(int i = 0; i < root->children.size(); i++){
+		deleteTree(root->children[i]);
+	}
+	delete root;
+}
+
+// 2. Override the delete function of the class;
 
 int main(){
 	// Manually make a tree.

@@ -12,6 +12,12 @@ class TreeNode{
 		TreeNode(T val){
 			this->data = val;
 		}
+		
+		~TreeNode(){
+			for(int i = 0; i < children.size(); i++){
+				delete children[i];
+			}
+		}
 };
 
 // Function to take input level wise.
