@@ -56,40 +56,32 @@ BinaryTreeNode<int>* takeInputLevelWise(){
 	return root;
 }
 
-
-int maxSumNode2Node(BinaryTreeNode<int>* root, int &res){
+bool isBST(BinaryTreeNode<int>* root, int minimum = INT_MIN, int maximum = INT_MAX){
 	if(root == NULL){
-		return 0;
+		return true;
 	}
 	
-	// Now we need to write out hypothesis.
-	int leftSum = maxSumNode2Node(root->left, res);
-	int rightSum = maxSumNode2Node(root->right, res);
+	// Now the first thing we need to check is whether the current node data lies in the constraint or not.
+	if(root->data > maximum || root->data < minimum){
+		return false;
+	}
 	
-	// Now we will consider both the possiblities that the current node can take to create the maxSumPath.
-	// First option is to find the maxSum from both sides by using max() and add the currNode->data to it.
-	int temp = max(max(leftSum,rightSum) + root->data, root->data);
+	// Now we need to pass the new constraints over to the left and right subtree.
+	bool isLeftTrue = isBST(root->left, minimum , root->data - 1);
+	bool isRightTrue = isBST(root->right, root->data, maximum);
 	
-	// The second option is to take the possibilty that the current node can be a part of the maxSumPath node 2 node of its own subtree.
-	// We will find which option is better for the current node.
-	// The first one or the second option.
-	int subAns = max(leftSum+rightSum+root->data, temp);
-	res = max(res,subAns);
-	
-	// We are returning temp because the parent node of current node will need the maxSum from both of its children to make a decision.
-	// The calculation of the maxPathSumNode2Node has nothing to do with the value that we return.
-	return temp;
+	return isLeftTrue && isRightTrue;
 }
 
 int main(){
-	
 	BinaryTreeNode<int>* root = takeInputLevelWise();
 	
-	int res = INT_MIN;
-	int maxSumPath = maxSumNode2Node(root,res);
-	cout << "The maximum sum path is : " << max(maxSumPath, res);
-	cout << endl;
+	//isBSTReturn finalOutput = isBST(root);
 	
-	delete root;
+	if(isBST(root)){
+		cout << "This BT is BST." << endl;
+	}else{
+		cout <<"This BT is not BST." << endl;
+	}
 	return 0;
 }

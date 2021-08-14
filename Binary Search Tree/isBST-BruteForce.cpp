@@ -56,40 +56,46 @@ BinaryTreeNode<int>* takeInputLevelWise(){
 	return root;
 }
 
+// The time complexity for this algorithm is T.C = O(n * height of tree).
+// This is a bad tme complexity.
 
-int maxSumNode2Node(BinaryTreeNode<int>* root, int &res){
+int maximum(BinaryTreeNode<int>* root){
 	if(root == NULL){
-		return 0;
+		return INT_MIN;
 	}
 	
-	// Now we need to write out hypothesis.
-	int leftSum = maxSumNode2Node(root->left, res);
-	int rightSum = maxSumNode2Node(root->right, res);
+	return max(root->data, max(maximum(root->left), maximum(root->right)));
+}
+
+int minimum(BinaryTreeNode<int>* root){
+	if(root == NULL){
+		return INT_MAX;
+	}
 	
-	// Now we will consider both the possiblities that the current node can take to create the maxSumPath.
-	// First option is to find the maxSum from both sides by using max() and add the currNode->data to it.
-	int temp = max(max(leftSum,rightSum) + root->data, root->data);
+	return min(root->data, min(minimum(root->left), minimum(root->right)));
+}
+
+bool isBST(BinaryTreeNode<int>* root){
+	if(root == NULL){
+		return true;
+	}
 	
-	// The second option is to take the possibilty that the current node can be a part of the maxSumPath node 2 node of its own subtree.
-	// We will find which option is better for the current node.
-	// The first one or the second option.
-	int subAns = max(leftSum+rightSum+root->data, temp);
-	res = max(res,subAns);
+	// We need the left maximum and the right minimum.
+	int leftMax = maximum(root->left);
+	int rightMin = minimum(root->right);
 	
-	// We are returning temp because the parent node of current node will need the maxSum from both of its children to make a decision.
-	// The calculation of the maxPathSumNode2Node has nothing to do with the value that we return.
-	return temp;
+	// Now we need to see if the  current node satifies all the 4 conditions or not.
+	bool ans = (root->data > leftMax) && root->data <= rightMin && isBST(root->left) && isBST(root->right);
+	return ans;
 }
 
 int main(){
-	
 	BinaryTreeNode<int>* root = takeInputLevelWise();
 	
-	int res = INT_MIN;
-	int maxSumPath = maxSumNode2Node(root,res);
-	cout << "The maximum sum path is : " << max(maxSumPath, res);
-	cout << endl;
-	
-	delete root;
+	if(isBST(root)){
+		cout << "This BT is BST." << endl;
+	}else{
+		cout <<"This BT is not BST." << endl;
+	}
 	return 0;
 }

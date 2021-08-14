@@ -22,6 +22,13 @@ class BinaryTreeNode{
 		}
 };
 
+class isBSTReturn{
+	public:
+		int minimum;
+		int maximum;
+		bool isBSTtrue;
+};
+
 BinaryTreeNode<int>* takeInputLevelWise(){
 	int rootData;
 	cout << "Enter the root data: ";
@@ -56,40 +63,43 @@ BinaryTreeNode<int>* takeInputLevelWise(){
 	return root;
 }
 
-
-int maxSumNode2Node(BinaryTreeNode<int>* root, int &res){
+isBSTReturn isBST(BinaryTreeNode<int>* root){
 	if(root == NULL){
-		return 0;
+		// We return the base output.
+		isBSTReturn output;
+		output.minimum = INT_MAX;
+		output.maximum = INT_MIN;
+		output.isBSTtrue = true;
+		return output;	
 	}
 	
-	// Now we need to write out hypothesis.
-	int leftSum = maxSumNode2Node(root->left, res);
-	int rightSum = maxSumNode2Node(root->right, res);
+	// Now we need the output object from both the left and right children before we can check for the current root value.
+	isBSTReturn leftOutput = isBST(root->left);
+	isBSTReturn rightOutput = isBST(root->right);
 	
-	// Now we will consider both the possiblities that the current node can take to create the maxSumPath.
-	// First option is to find the maxSum from both sides by using max() and add the currNode->data to it.
-	int temp = max(max(leftSum,rightSum) + root->data, root->data);
+	// Now we need to update the new minimum and maximum taking in account of the the current Node's data.
+	int maximum = max(root->data, max(leftOutput.maximum , rightOutput.maximum));
+	int minimum = min(root->data , min(leftOutput.minimum , rightOutput.minimum));
 	
-	// The second option is to take the possibilty that the current node can be a part of the maxSumPath node 2 node of its own subtree.
-	// We will find which option is better for the current node.
-	// The first one or the second option.
-	int subAns = max(leftSum+rightSum+root->data, temp);
-	res = max(res,subAns);
+	// We need to check the 4 conditions to see if the current subtree is a BST or not.
+	bool isBSTfinal = (root->data > leftOutput.maximum) && (root->data <= rightOutput.minimum) && leftOutput.isBSTtrue && rightOutput.isBSTtrue;
 	
-	// We are returning temp because the parent node of current node will need the maxSum from both of its children to make a decision.
-	// The calculation of the maxPathSumNode2Node has nothing to do with the value that we return.
-	return temp;
+	isBSTReturn output;
+	output.maximum = maximum;
+	output.minimum = minimum;
+	output.isBSTtrue = isBSTfinal;
+	return output;
 }
 
 int main(){
-	
 	BinaryTreeNode<int>* root = takeInputLevelWise();
 	
-	int res = INT_MIN;
-	int maxSumPath = maxSumNode2Node(root,res);
-	cout << "The maximum sum path is : " << max(maxSumPath, res);
-	cout << endl;
+	isBSTReturn finalOutput = isBST(root);
 	
-	delete root;
+	if(finalOutput.isBSTtrue){
+		cout << "This BT is BST." << endl;
+	}else{
+		cout <<"This BT is not BST." << endl;
+	}
 	return 0;
 }
