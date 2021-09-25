@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string>
-#include<tr1/unordered_map>
+#include<unordered_map>
 #include<stack>
 using namespace std;
 
@@ -8,35 +8,35 @@ using namespace std;
 
 bool isBalanced(string s) 
 {
-    std::tr1::unordered_map<char,int> open_brac = {
+    unordered_map<char , int> openBrackets({
         {'{' , 1},
         {'[' , 2},
-        {'(' , 3},
-    };
-    
-    std::tr1::unordered_map<char, int> close_brac = {
+        {'(' , 3}
+    });
+    unordered_map<char , int> closeBrackets({
         {'}' , 1},
         {']' , 2},
-        {')' , 3},
-    };
-    
-    stack<int> bracket_check;
-    
-    for(auto x:s){
-        if(open_brac.count(x) > 0){
-            bracket_check.push(open_brac[x]);
-        }
+        {')' , 3}
+    });
         
-        else if(close_brac.count(x) > 0){
-            if(!bracket_check.empty() && bracket_check.top() == close_brac[x]){
-                bracket_check.pop();
-            }
-            else{
+    stack<int> brackets;
+        
+    for(int i= 0; i < x.size(); i++){
+        if(openBrackets.find(x[i]) != openBrackets.end()){
+            brackets.push(openBrackets[x[i]]);
+        }else if(!brackets.empty() && closeBrackets.find(x[i]) != closeBrackets.end()){
+            if(brackets.top() == closeBrackets[x[i]]){
+                brackets.pop();
+            }else{
                 return false;
             }
+        }else if(brackets.empty() && closeBrackets.find(x[i]) != closeBrackets.end()){
+            return false;
         }
     }
-	return bracket_check.empty();
+        
+    return brackets.empty();
+}
     
 }
 
