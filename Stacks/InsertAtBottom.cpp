@@ -4,17 +4,28 @@
 #include<stack>
 using namespace std;
 
-stack<int> insertAtBottom(stack<int>& s1, int val){
+// The Approach is:
+/*
+	1. We want to insert a new element at the end of the stack.
+		- To do soo, we will have to empty the stack first, but as we don't want to use any auxiliary space, we can use recursion.
+	2. We will first empty the stack, once the base case is reached we will insert the element.
+		- Then we will simply as we pop the functions from the recursion stack, they will input back the top value which was popped.
+		
+	Time Complexity: O(N)
+	Space Complexity: O(1)
+*/
+
+void insertAtBottom(stack<int>& s1, int val){
 	if(s1.empty()){
 		s1.push(val);
-		return s1;
+		return;
 	}
 	
 	int top = s1.top();s1.pop();
-	s1 = insertAtBottom(s1 , val);
+	insertAtBottom(s1 , val);
 	s1.push(top);
 	
-	return s1;
+	return;
 }
 
 int main(){
@@ -35,7 +46,7 @@ int main(){
 	cin >> val;
 	
 	// Now we wwill call the function to input the element in the end.
-	s1 = insertAtBottom(s1 , val);
+	insertAtBottom(s1 , val);
 	
 	while(!s1.empty()){
 		cout << s1.top() << " ";
