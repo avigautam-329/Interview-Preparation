@@ -14,47 +14,56 @@ Intution:
 	
 Approach:
 	1. We will put all the indices where a zero exists in a queue.
-	2. Then we will try to go through the queue (BFS) to find the 1.
-	3. Again , we cann move in 4 directions. 
+	2. Then we will try to go through the queue (BFS) to find the 0.
+	3. Again , we can move in 4 directions.
+	4.  
 */
 
-bool isValid(int **matrix , int n, int m, int x , int y){
-	if(x >= 0 && y >= 0 && x < n && y < m){
-		return true;
-	}
-	
-	return false;
-}
 
-vector<vector<int> > findDistances(int **matrix, int n , int m){
-	int xMove[] = {-1 , 1 , 0 ,0};
-	int yMove[] = {0 , 0 ,-1 , 1};
-	
-	queue<pair<int , int> > pendingPositions;
-	vector<vector<int> > res(n , vector<int>(m , 0));
-	for(int i = 0; i < n; i++){
-		for(int j = 0; j < m ; j++){
-			if(matrix[i][j] == 0){
-				
-				pendingPositions.push({i , j});
-			}
-		}
+vector<vector<int> > findDistances(int **matrix, int n , int m)
+{
+	int n = matrix.size();
+	int m = matrix[0].size();
+    int xMove[] = {-1 , 1 , 0 ,0};
+    int yMove[] = {0 , 0 ,-1 , 1};
+    	
+    queue<pair<int , int> > pendingPositions;
+    vector<vector<int> > res(n , vector<int>(m , INT_MAX));
+    for(int i = 0; i < n; i++){
+    	for(int j = 0; j < m ; j++){
+    		if(matrix[i][j] == 1){
+    				
+    			res[i][j] = 0;
+    			pendingPositions.push({i , j});
+    		}
+    	}
 	}
-	
-	// Now for the positions in the queue, we will search in the 4 directions for a 1.
-	while(!pendingPositions.empty()){
-		for(int i = 0; i < 4; i++){
-			if(isValid(matrix, n, m, pendingPositions.front().first + xMove[i] , pendingPositions.front().second + yMove[i])){
-				if(matrix[pendingPositions.front().first + xMove[i]][pendingPositions.front().second + yMove[i]] == 1){
-					res[pendingPositions.front().first][pendingPositions.front().second] = 1;
-				}
-			}
-		}
-		
-		pendingPositions.pop();
-	}
-	
-	return res;
+    	
+    // Now for the positions in the queue, we will search in the 4 directions for a 0.
+    while(!pendingPositions.empty()){
+    	int x = pendingPositions.front().first;
+    	int y = pendingPositions.front().second;
+    	pendingPositions.pop();
+    	for(int i = 0; i < 4; i++){
+    		int currX = x + xMove[i];
+    		int currY = y + yMove[i];
+    		if(currX >= 0 && currX < n && currY >= 0 && currY < m){
+    			// Now we have to check, whether the distance from the current block to the next 0 block is actually less than
+    			// The distance already stored for it in the res matrix.
+    				
+    			if(res[x][y] + 1 < res[currX][currY]){
+    					
+    				res[currX][currY] = res[x][y] + 1;
+    					
+    				pendingPositions.push({currX , currY});
+    			}
+    		}
+    	}
+    		
+    		
+    }
+    	
+    return res;
 }
 
 int main(){
